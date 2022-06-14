@@ -1,0 +1,9 @@
+[submodule "rtt_zaber"]
+	path = rtt_zaber
+	url = git@github.com:simonleonard/rtt_zaber.git
+[submodule "rtt_ros2_geometry_msgs"]
+	path = rtt_ros2_geometry_msgs
+	url = git@github.com:simonleonard/rtt_ros2_geometry_msgs.git
+[submodule "rtt_ros2_sensor_msgs"]
+	path = rtt_ros2_sensor_msgs
+	url = git@github.com:simonleonard/rtt_ros2_sensor_msgs.git
