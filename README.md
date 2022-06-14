@@ -34,3 +34,11 @@ Build everything. The ROS test packages do not build on my system so the followi
 ```shell
 colcon build --packages-ignore-regex rtt_ros2_idl_tests rtt_ros2_params_tests rtt_ros2_services_tests rtt_ros2_test_msgs rtt_ros2_tests rtt_ros2_topics_tests --cmake-args -DCMAKE_CXX_FLAGS=-DRTT_COMPONENT -DOROCOS-RTT_DIR=/usr/local/orocos_toolchain/lib/cmake/orocos-rtt
 ```
+## Run the Zaber component
+You will need to source the workspace and set the RTT_COMPONENT_PATH environment variable. For now, this is done with
+```shell
+source install/setup.bash
+source src/needle_steering/scripts/rtt_setup.sh
+/usr/local/orocos_toolchain/bin/deployer -s src/needle_steering/rtt_zaber/scripts/zaber.ops
+```
+In another terminal, you should see the topic /wrench that is read by the component. Publishing a message will print a message in the deployer.
