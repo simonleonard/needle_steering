@@ -1,9 +1,0 @@
-[submodule "rtt_ros2_geometry_msgs"]
-	path = rtt_ros2_geometry_msgs
-	url = ./rtt_ros2_geometry_msgs
-[submodule "rtt_ros2_sensor_msgs"]
-	path = rtt_ros2_sensor_msgs
-	url = ./rtt_ros2_sensor_msgs
-[submodule "rtt_zaber"]
-	path = rtt_zaber
-	url = ./rtt_zaber
