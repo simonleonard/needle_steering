@@ -28,7 +28,7 @@ These are ROS packages and should go in your workspace
 ```shell
 mkdir -p ~/ros/src
 git clone git@github.com:orocos/rtt_ros2_integration.git
-git clone git@github.com:simonleonard/needle_steering.git --recurssive
+git clone git@github.com:simonleonard/needle_steering.git --recursive
 ```
 Build everything. The ROS test packages do not build on my system so the following command ignores them
 ```shell
