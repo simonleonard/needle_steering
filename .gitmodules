@@ -1,3 +1,9 @@
 [submodule "rtt_ros2_zaber"]
 	path = rtt_ros2_zaber
 	url = git@github.com:simonleonard/rtt_ros2_zaber.git
+[submodule "rtt_ros2_ati"]
+	path = rtt_ros2_ati
+	url = git@github.com:simonleonard/rtt_ros2_ati.git
+[submodule "rtt_ros2_ndi"]
+	path = rtt_ros2_ndi
+	url = git@github.com:simonleonard/rtt_ros2_ndi.git
