@@ -3,7 +3,7 @@
 <package format="3">
   <name>needle_steering_control_demo_msgs</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Control demo messages</description>
   <maintainer email="mxcheng@umich.edu">xma42</maintainer>
   <license>TODO: License declaration</license>
 

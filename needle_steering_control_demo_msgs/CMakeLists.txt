@@ -27,6 +27,8 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/ControlDemoPoint.msg"
+  "msg/Inputs.msg"
+  "msg/Outputs.msg"
   DEPENDENCIES sensor_msgs geometry_msgs
 )
 
