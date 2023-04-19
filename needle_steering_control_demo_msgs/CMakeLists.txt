@@ -21,15 +21,15 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-find_package(sensor_msgs REQUIRED)
-find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/ControlDemoPoint.msg"
   "msg/Inputs.msg"
   "msg/Outputs.msg"
-  DEPENDENCIES sensor_msgs geometry_msgs
+  "msg/ControlDemoPoint.msg"
+  DEPENDENCIES std_msgs
 )
 
 
