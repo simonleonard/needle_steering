@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'control_plotting = control_plotting.control_plotting:main',
+            # 'random_walk_draw = control_plotting.random_walk_draw:main',
         ],
     },
 )
