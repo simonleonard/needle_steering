@@ -29,6 +29,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Measurement.msg"
   "msg/ControlInput.msg"
   "msg/Jacobian.msg"
+  "srv/AddFilteredDemoWpts.srv"
   DEPENDENCIES std_msgs
 )
 

@@ -1,11 +1,12 @@
 from setuptools import setup
 
 package_name = 'control_plotting'
+submodules = "control_plotting/trajectory"
 
 setup(
     name=package_name,
     version='0.0.0',
-    packages=[package_name],
+    packages=[package_name, submodules],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -21,7 +22,6 @@ setup(
     entry_points={
         'console_scripts': [
             'control_plotting = control_plotting.control_plotting:main',
-            # 'random_walk_draw = control_plotting.random_walk_draw:main',
         ],
     },
 )
