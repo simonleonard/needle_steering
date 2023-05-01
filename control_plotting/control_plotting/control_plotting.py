@@ -1,11 +1,13 @@
 import rclpy
 from rclpy.node import Node
+from std_srvs.srv import Empty
 
 import matplotlib.pyplot as plt
 import numpy as np
+
 from control_reproduce_interfaces.msg import Measurement
 from control_reproduce_interfaces.srv import AddFilteredDemoWpts
-from std_srvs.srv import Empty
+
 from .trajectory.trajectory import Trajectory
 
 
@@ -16,27 +18,19 @@ class ControlPlotting(Node):
 
         self.figure_setup()
 
-        self.trajs = {'demo_js': Trajectory(self.axes['ls_tx'], self.axes['ls_tz'], 'b'),
-                      'demo_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'b'),
-                      'demo_tp_filtered': Trajectory(self.axes['y_x'], self.axes['y_z'],  'g')}
+        self.trajs = {'demo_js': Trajectory(self.axes['ls_tx'], self.axes['ls_tz'], 'k'),
+                      'demo_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'k'),
+                      'demo_tp_filtered': Trajectory(self.axes['y_x'], self.axes['y_z'],  'g'),
+                      'repr_js': Trajectory(self.axes['ls_tx'], self.axes['ls_tz'], 'b'),
+                      'repr_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'b'), }
 
         self.init_drawing()
-
-        self.demo_wpt_sub = self.create_subscription(
-            Measurement,
-            '/demo_wpt',
-            self.demo_wpt_callback,
-            10)
-        self.demo_wpt_sub
 
         timer_period = 0.01
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
-        self.create_service(Empty, 'clear_demo_way_points',
-                            self.clear_demo_way_points_callback)
-
-        self.create_service(AddFilteredDemoWpts, 'add_filtered_demo_way_points',
-                            self.add_filtered_demo_way_points_callback)
+        self.subscriptions_setup()
+        self.services_setup()
 
     def figure_setup(self):
         self.fig, ((ls_tx, y_x),
@@ -60,6 +54,31 @@ class ControlPlotting(Node):
 
         self.axes = {'ls_tx': ls_tx, 'ls_tz': ls_tz, 'y_x': y_x, 'y_z': y_z}
 
+    def subscriptions_setup(self):
+        self.demo_wpt_sub = self.create_subscription(
+            Measurement,
+            '/demo_wpt',
+            self.demo_wpt_callback,
+            10)
+        self.demo_wpt_sub
+
+        self.repr_wpt_sub = self.create_subscription(
+            Measurement,
+            '/reproduce_wpt',
+            self.repr_wpt_callback,
+            10)
+        self.repr_wpt_sub
+
+    def services_setup(self):
+        self.create_service(Empty, 'clear_demo_way_points',
+                            self.clear_demo_way_points_callback)
+
+        self.create_service(AddFilteredDemoWpts, 'add_filtered_demo_way_points',
+                            self.add_filtered_demo_way_points_callback)
+
+        self.create_service(Empty, 'clear_reproduce_way_points',
+                            self.clear_reproduce_way_points_callback)
+
     def init_drawing(self):
         plt.show(block=False)
 
@@ -70,10 +89,20 @@ class ControlPlotting(Node):
         self.trajs['demo_js'].add_pt(msg.js.tx, msg.js.ls, msg.js.tz)
         self.trajs['demo_tp'].add_pt(msg.tp.x, msg.tp.y, msg.tp.z)
 
+    def repr_wpt_callback(self, msg):
+        self.trajs['repr_js'].add_pt(msg.js.tx, msg.js.ls, msg.js.tz)
+        self.trajs['repr_tp'].add_pt(msg.tp.x, msg.tp.y, msg.tp.z)
+
     def clear_demo_way_points_callback(self, request, response):
         self.trajs['demo_js'].clear_drawing()
         self.trajs['demo_tp'].clear_drawing()
         self.trajs['demo_tp_filtered'].clear_drawing()
+        plt.draw()
+        return response
+
+    def clear_reproduce_way_points_callback(self, request, response):
+        self.trajs['repr_js'].clear_drawing()
+        self.trajs['repr_tp'].clear_drawing()
         plt.draw()
         return response
 
