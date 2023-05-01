@@ -5,7 +5,7 @@ from std_srvs.srv import Empty
 import matplotlib.pyplot as plt
 import numpy as np
 
-from control_reproduce_interfaces.msg import Measurement
+from control_reproduce_interfaces.msg import Measurement, TipPosition
 from control_reproduce_interfaces.srv import AddFilteredDemoWpts
 
 from .trajectory.trajectory import Trajectory
@@ -22,7 +22,9 @@ class ControlPlotting(Node):
                       'demo_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'k'),
                       'demo_tp_filtered': Trajectory(self.axes['y_x'], self.axes['y_z'],  'g'),
                       'repr_js': Trajectory(self.axes['ls_tx'], self.axes['ls_tz'], 'b'),
-                      'repr_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'b'), }
+                      'repr_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'b'),
+                      'repr_tp_filtered': Trajectory(self.axes['y_x'], self.axes['y_z'],  'm'),
+                      'jacobian_update_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'r*')}
 
         self.init_drawing()
 
@@ -69,6 +71,20 @@ class ControlPlotting(Node):
             10)
         self.repr_wpt_sub
 
+        self.repr_tp_filtered_sub = self.create_subscription(
+            TipPosition,
+            '/reproduce_tp_filtered',
+            self.repr_tp_filtered_callback,
+            10)
+        self.repr_tp_filtered_sub
+
+        self.repr_tp_filtered_sub = self.create_subscription(
+            TipPosition,
+            '/jacobian_update_tp',
+            self.jacobian_update_tp_callback,
+            10)
+        self.repr_tp_filtered_sub
+
     def services_setup(self):
         self.create_service(Empty, 'clear_demo_way_points',
                             self.clear_demo_way_points_callback)
@@ -93,6 +109,12 @@ class ControlPlotting(Node):
         self.trajs['repr_js'].add_pt(msg.js.tx, msg.js.ls, msg.js.tz)
         self.trajs['repr_tp'].add_pt(msg.tp.x, msg.tp.y, msg.tp.z)
 
+    def repr_tp_filtered_callback(self, msg):
+        self.trajs['repr_tp_filtered'].add_pt(msg.x, msg.y, msg.z)
+
+    def jacobian_update_tp_callback(self, msg):
+        self.trajs['jacobian_update_tp'].add_pt(msg.x, msg.y, msg.z)
+
     def clear_demo_way_points_callback(self, request, response):
         self.trajs['demo_js'].clear_drawing()
         self.trajs['demo_tp'].clear_drawing()
@@ -103,6 +125,8 @@ class ControlPlotting(Node):
     def clear_reproduce_way_points_callback(self, request, response):
         self.trajs['repr_js'].clear_drawing()
         self.trajs['repr_tp'].clear_drawing()
+        self.trajs['repr_tp_filtered'].clear_drawing()
+        self.trajs['jacobian_update_tp'].clear_drawing()
         plt.draw()
         return response
 
