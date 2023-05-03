@@ -19,13 +19,24 @@ class ControlPlotting(Node):
 
         self.figure_setup()
 
-        self.trajs = {'demo_js': Trajectory(self.axes['ls_tx'], self.axes['ls_tz'], 'k'),
-                      'demo_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'k'),
-                      'demo_tp_filtered': Trajectory(self.axes['y_x'], self.axes['y_z'],  'g'),
-                      'repr_js': Trajectory(self.axes['ls_tx'], self.axes['ls_tz'], 'b'),
-                      'repr_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'b'),
-                      'repr_tp_filtered': Trajectory(self.axes['y_x'], self.axes['y_z'],  'm'),
-                      'jacobian_update_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'r*', show=False)}
+        self.trajs = {'demo_js': Trajectory(self.axes['ls_tx'], self.axes['ls_tz'],
+                                            label='demo', color='k', linestyle='-', linewidth=1),
+                      'demo_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],
+                                            label='demo', color='k', linestyle='-', linewidth=0.75),
+                      'demo_tp_filtered': Trajectory(self.axes['y_x'], self.axes['y_z'],
+                                                     label='demo_filtered', color='b',
+                                                     linestyle='-', linewidth=0.75),
+                      'repr_js': Trajectory(self.axes['ls_tx'], self.axes['ls_tz'],
+                                            label='reprpduce', color='tab:orange', linestyle='-', linewidth=1),
+                      'repr_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],
+                                            label='reprpduce', color='tab:red', linestyle='-', linewidth=0.75),
+                      'repr_tp_filtered': Trajectory(self.axes['y_x'], self.axes['y_z'],
+                                                     label='reprpduce_filtered', color='tab:orange',
+                                                     linestyle='-', linewidth=0.75),
+                      'jacobian_update_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],
+                                                       label='jacobian update', color='m',
+                                                       linestyle=None, linewidth=0.0,
+                                                       marker='*', markersize=0.75, show=False)}
 
         self.init_drawing()
 
@@ -40,6 +51,20 @@ class ControlPlotting(Node):
                    (ls_tz, y_z)) = plt.subplots(2, 2)
         self.fig.set_figwidth(18)
         self.fig.set_figheight(10)
+
+        ls_tx.set_title('Joint state TX vs.LS')
+        ls_tz.set_title('Joint state TZ vs.LS')
+        y_x.set_title('Tip Position x vs. y')
+        y_z.set_title('Tip Position z vs. y')
+
+        ls_tx.set_xlabel('LS (mm)')
+        ls_tz.set_xlabel('LS (mm)')
+        y_x.set_xlabel('y (mm)')
+        y_z.set_xlabel('y (mm)')
+        ls_tx.set_ylabel('TX (mm)')
+        ls_tz.set_ylabel('TZ (mm)')
+        y_x.set_ylabel('x (mm)')
+        y_z.set_ylabel('z (mm)')
 
         for ax in [ls_tx, ls_tz]:
             ax.set_xlim([-5, 70])
@@ -144,7 +169,7 @@ class ControlPlotting(Node):
         elif request.name == 'reproduce':
             self.trajs['repr_js'].toggle_visualization()
             self.trajs['repr_tp'].toggle_visualization()
-            response.status = request.SHOWN if self.trajs['repr_tp_filtered'].show else request.HIDDEN
+            response.status = request.SHOWN if self.trajs['repr_js'].show else request.HIDDEN
         elif request.name == 'reproduce filtered':
             self.trajs['repr_tp_filtered'].toggle_visualization()
             response.status = request.SHOWN if self.trajs['repr_tp_filtered'].show else request.HIDDEN
