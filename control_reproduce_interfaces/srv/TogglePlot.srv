@@ -1,0 +1,6 @@
+uint8 SHOWN=0
+uint8 HIDDEN=1
+uint8 FAILED=2
+string name
+---
+uint8 status

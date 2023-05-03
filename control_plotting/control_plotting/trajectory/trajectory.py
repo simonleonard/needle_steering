@@ -1,5 +1,5 @@
 class Trajectory:
-    def __init__(self, ax_x, ax_z, style):
+    def __init__(self, ax_x, ax_z, style, show=True):
         self.ax_x = ax_x
         self.ax_z = ax_z
         self.style = style
@@ -7,7 +7,7 @@ class Trajectory:
         self.ys = []
         self.zs = []
         self.__reset_artist()
-        # self.show = True
+        self.show = show
 
     def add_pt(self, x, y, z):
         self.xs.append(x)
@@ -20,31 +20,40 @@ class Trajectory:
             self.add_pt(*itr(i))
 
     def redraw_pts(self):
-        self.y_x.set_data(self.ys, self.xs)
-        self.y_z.set_data(self.ys, self.zs)
-        self.ax_x.draw_artist(self.y_x)
-        self.ax_z.draw_artist(self.y_z)
+        if self.show:
+            self.y_x.set_data(self.ys, self.xs)
+            self.y_z.set_data(self.ys, self.zs)
+            self.ax_x.draw_artist(self.y_x)
+            self.ax_z.draw_artist(self.y_z)
 
     def clear_drawing(self):
         self.__clear_all_pts()
-        self.__clear_drawing()
-
-    # def toggle_visualization(self):
-    #     if self.show:
-    #         self.show = False
-    #     else:
-    #         self.show = True
-
-    def __reset_artist(self):
-        self.y_x = self.ax_x.plot([], [], self.style)[0]
-        self.y_z = self.ax_z.plot([], [], self.style)[0]
-
-    def __clear_drawing(self):
-        self.ax_x.lines.remove(self.y_x)
-        self.ax_z.lines.remove(self.y_z)
+        self.__remove_artist()
         self.__reset_artist()
+
+    def toggle_visualization(self):
+        if self.show:
+            self.__hide_artist()
+        else:
+            self.__show_artist()
 
     def __clear_all_pts(self):
         self.xs.clear()
         self.ys.clear()
         self.zs.clear()
+
+    def __reset_artist(self):
+        self.y_x = self.ax_x.plot(self.ys, self.xs, self.style)[0]
+        self.y_z = self.ax_z.plot(self.ys, self.zs, self.style)[0]
+
+    def __remove_artist(self):
+        self.ax_x.lines.remove(self.y_x)
+        self.ax_z.lines.remove(self.y_z)
+
+    def __hide_artist(self):
+        self.show = False
+        self.__remove_artist()
+
+    def __show_artist(self):
+        self.show = True
+        self.__reset_artist()

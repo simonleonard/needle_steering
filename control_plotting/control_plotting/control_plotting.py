@@ -7,6 +7,7 @@ import numpy as np
 
 from control_reproduce_interfaces.msg import Measurement, TipPosition
 from control_reproduce_interfaces.srv import AddFilteredDemoWpts
+from control_reproduce_interfaces.srv import TogglePlot
 
 from .trajectory.trajectory import Trajectory
 
@@ -24,7 +25,7 @@ class ControlPlotting(Node):
                       'repr_js': Trajectory(self.axes['ls_tx'], self.axes['ls_tz'], 'b'),
                       'repr_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'b'),
                       'repr_tp_filtered': Trajectory(self.axes['y_x'], self.axes['y_z'],  'm'),
-                      'jacobian_update_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'r*')}
+                      'jacobian_update_tp': Trajectory(self.axes['y_x'], self.axes['y_z'],  'r*', show=False)}
 
         self.init_drawing()
 
@@ -95,6 +96,9 @@ class ControlPlotting(Node):
         self.create_service(Empty, 'clear_reproduce_way_points',
                             self.clear_reproduce_way_points_callback)
 
+        self.create_service(TogglePlot, 'toggle_plot',
+                            self.toggle_plot_callback)
+
     def init_drawing(self):
         plt.show(block=False)
 
@@ -127,6 +131,28 @@ class ControlPlotting(Node):
         self.trajs['repr_tp'].clear_drawing()
         self.trajs['repr_tp_filtered'].clear_drawing()
         self.trajs['jacobian_update_tp'].clear_drawing()
+        plt.draw()
+        return response
+
+    def toggle_plot_callback(self, request, response):
+        if request.name == 'demo':
+            self.trajs['demo_tp'].toggle_visualization()
+            response.status = request.SHOWN if self.trajs['demo_tp'].show else request.HIDDEN
+        elif request.name == 'demo filtered':
+            self.trajs['demo_tp_filtered'].toggle_visualization()
+            response.status = request.SHOWN if self.trajs['demo_tp_filtered'].show else request.HIDDEN
+        elif request.name == 'reproduce':
+            self.trajs['repr_js'].toggle_visualization()
+            self.trajs['repr_tp'].toggle_visualization()
+            response.status = request.SHOWN if self.trajs['repr_tp_filtered'].show else request.HIDDEN
+        elif request.name == 'reproduce filtered':
+            self.trajs['repr_tp_filtered'].toggle_visualization()
+            response.status = request.SHOWN if self.trajs['repr_tp_filtered'].show else request.HIDDEN
+        elif request.name == 'jacobian update':
+            self.trajs['jacobian_update_tp'].toggle_visualization()
+            response.status = request.SHOWN if self.trajs['jacobian_update_tp'].show else request.HIDDEN
+        else:
+            response.status = request.FAILED
         plt.draw()
         return response
 

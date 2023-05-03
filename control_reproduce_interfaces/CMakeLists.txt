@@ -30,6 +30,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/ControlInput.msg"
   "msg/Jacobian.msg"
   "srv/AddFilteredDemoWpts.srv"
+  "srv/TogglePlot.srv"
   DEPENDENCIES std_msgs
 )
 
