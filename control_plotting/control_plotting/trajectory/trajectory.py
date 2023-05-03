@@ -33,8 +33,8 @@ class Trajectory:
             self.ax_z.draw_artist(self.y_z)
 
     def clear_drawing(self):
+        self.__clear_all_pts()
         if self.show:
-            self.__clear_all_pts()
             self.__remove_artist()
             self.__reset_artist()
 
