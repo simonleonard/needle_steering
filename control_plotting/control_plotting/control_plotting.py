@@ -49,6 +49,8 @@ class ControlPlotting(Node):
     def figure_setup(self):
         self.fig, ((ls_tx, y_x),
                    (ls_tz, y_z)) = plt.subplots(2, 2)
+        self.fig.tight_layout()
+
         self.fig.set_figwidth(18)
         self.fig.set_figheight(10)
 
